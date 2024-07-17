@@ -1,0 +1,70 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Invoice {
+  id             Int      @id @default(autoincrement())
+  companyName    String
+  invoiceAuthor  String
+  companyAddress String
+  companyCity    String
+  companyCountry String
+  clientName     String
+  clientCompany  String
+  clientAddress  String
+  clientCity     String
+  clientCountry  String
+  clientPhone    String
+  invoiceNumber  String
+  invoiceDate    DateTime
+  invoiceDueDate DateTime
+  logoUrl        String?
+  tableData      Row[]    // Define a one-to-many relationship to Row
+}
+
+model Row {
+  id              Int      @id @default(autoincrement())
+  itemDescription String
+  qty             Int
+  unitPrice       Float
+  tax             Float
+  amount          Float
+  invoiceId       Int      // Define a foreign key relationship to Invoice
+  invoice         Invoice  @relation(fields: [invoiceId], references: [id])
+}
+
+model Receipt {
+  id             Int       @id @default(autoincrement())
+  companyName    String
+  receiptAuthor  String
+  companyAddress String
+  companyCity    String
+  companyCountry String
+  clientName     String
+  clientCompany  String
+  clientAddress  String
+  clientCity     String
+  clientCountry  String
+  clientPhone    String
+  receiptNumber  String
+  receiptDate    DateTime
+  logoUrl        String?
+  tableData      ReceiptRow[]  // Define a one-to-many relationship to ReceiptRow
+}
+
+model ReceiptRow {
+  id              Int       @id @default(autoincrement())
+  itemDescription String
+  qty             Int
+  unitPrice       Float
+  tax             Float
+  amount          Float
+  receiptId       Int       // Define a foreign key relationship to Receipt
+  receipt         Receipt   @relation(fields: [receiptId], references: [id])
+}

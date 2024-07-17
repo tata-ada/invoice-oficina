@@ -1,0 +1,49 @@
+/* print.css */
+
+/* Definições de estilo para impressão geral */
+@media print {
+  body {
+    font-size: 12pt; /* Tamanho de fonte para impressão */
+  }
+
+  /* Esconder elementos que não devem ser impressos */
+  .no-print {
+    display: none;
+  }
+
+  /* Ajustes para containers específicos */
+  .preview-container {
+    width: 210mm; /* Tamanho da página A4 em largura */
+    height: 297mm; /* Tamanho da página A4 em altura */
+    padding: 20mm; /* Margens da página A4 */
+    background-color: #ffffff;
+    box-shadow: none; /* Remove a sombra da página */
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Para garantir que nada fora do conteúdo da página seja mostrado */
+  }
+
+  .logo-image {
+    width: 100%; /* Para garantir que a logo ocupe toda a largura do container */
+    height: auto; /* Para garantir que a logo ocupe toda a altura do container */
+    object-fit: contain; /* Para garantir que a imagem da logo seja contida dentro do container */
+    max-width: 150px; /* Largura máxima da logo */
+    max-height: 80px; /* Altura máxima da logo */
+  }
+
+  .signature {
+    font-style: italic; /* Estilo de assinatura */
+    font-size: 14px; /* Tamanho da fonte da assinatura */
+  }
+  
+  /* Ajustes adicionais conforme necessário */
+  
+  .invoice-container,
+  .receipt-container {
+    /* Estilos para garantir que o conteúdo seja renderizado corretamente */
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    box-shadow: none; /* Remover sombra para economizar tinta */
+    border: none; /* Remover bordas */
+  }
+}
