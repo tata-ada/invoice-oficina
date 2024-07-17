@@ -1,0 +1,61 @@
+.preview-container {
+    width: 210mm; /* Tamanho da página A4 em largura */
+    height: 297mm; /* Tamanho da página A4 em altura */
+    padding: 20mm; /* Margens da página A4 */
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    font-family: Arial, sans-serif;
+  }
+  
+  .logo-image {
+    width: 150px; /* Largura fixa da logo */
+    height: 80px; /* Altura fixa da logo */
+    object-fit: contain; /* Para garantir que a imagem da logo seja contida dentro do container */
+  }
+  
+  .signature {
+    font-style: italic; /* Estilo de assinatura */
+    font-size: 14px; /* Tamanho da fonte da assinatura */
+  }
+  
+  @media print {
+    .preview-container {
+      width: 210mm; /* Tamanho da página A4 em largura */
+      height: 297mm; /* Tamanho da página A4 em altura */
+      padding: 20mm; /* Margens da página A4 */
+    }
+  
+    .logo-image {
+      width: 100%; /* Para garantir que a logo ocupe toda a largura do container */
+      height: auto; /* Para garantir que a logo ocupe toda a altura do container */
+      object-fit: contain; /* Para garantir que a imagem da logo seja contida dentro do container */
+    }
+    @media print {
+      .invoice-container {
+        border: none; /* Remove a borda ao imprimir */
+      }
+    }
+    .mt-6 textarea {
+      margin: 0;
+      padding: 0;
+    }
+    
+    
+  
+    /* Adicione outros estilos de impressão conforme necessário */
+  }
+  @media (max-width: 768px) { /* Exemplo de largura máxima para dispositivos móveis */
+    .logo-image {
+      width: 80%; /* Largura da logo em porcentagem do container */
+      max-width: 200px; /* Largura máxima da logo */
+      height: auto; /* Altura automática para manter a proporção */
+      object-fit: contain; /* Para garantir que a imagem da logo seja contida dentro do container */
+    }
+  }
+  .no-print {
+    display: none; /* Esconder elementos não essenciais */
+  }
+
+  
+  
+  

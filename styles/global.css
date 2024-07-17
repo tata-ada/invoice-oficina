@@ -1,0 +1,36 @@
+/* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importação da fonte do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Caveat:wght@400..700&display=swap');
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'San Francisco', 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Inter', sans-serif;
+  margin: 0;
+  background: #f1f1f1;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Outros estilos customizados */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  .print\:block {
+    display: block !important;
+  }
+  .print\:flex {
+    display: flex !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
