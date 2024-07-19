@@ -1,4 +1,5 @@
 "use client";
+import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react';
 import { BsLayoutTextWindowReverse } from 'react-icons/bs';
 import { AiOutlinePrinter, AiOutlineCloudUpload } from 'react-icons/ai';
@@ -214,7 +215,7 @@ const InvoiceForm = () => {
     onAfterPrint: () => {
       clearFormData();
       setInvoiceCount(prevCount => prevCount + 1);
-      saveCounters();
+    
     }
   });
 
@@ -223,7 +224,7 @@ const InvoiceForm = () => {
     onAfterPrint: () => {
       clearReceiptData();
       setReceiptCount(prevCount => prevCount + 1);
-      saveCounters();
+   
     }
   });
 
@@ -297,12 +298,14 @@ Fortaleza - CE, 60531-820
                 <p>CNPJ 204445040001-08</p>
               </div>
               {/* Imagem */}
-              <div className="w-30 h-24 border-0 rounded-lg">
-                <img
-                  src="/logo.png"
-                  alt="Logo da Empresa"
-                  className="w-full h-full object-cover rounded-lg"
-                />
+              <div className=" border-0 rounded-lg">
+              <Image
+            src="/logo3.png"
+            alt="Logo da Empresa"
+            width={120} // ajuste conforme necessário
+            height={120} // ajuste conforme necessário
+            className="border-0 rounded-lg ml-4"
+          />
               </div>
             </div>
 
@@ -443,12 +446,14 @@ Fortaleza - CE, 60531-820
                 <p>CNPJ 204445040001-08</p>
               </div>
               {/* Imagem */}
-              <div className="ww-30 h-24 border-0 rounded-lg ml-4">
-                <img
-                  src="/logo.png"
-                  alt="Logo da Empresa"
-                  className="w-full h-full object-cover rounded-lg"
-                />
+              <div className=" border-0 rounded-lg ml-4">
+              <Image
+            src="/logo3.png"
+            alt="Logo da Empresa"
+            width={120} // ajuste conforme necessário
+            height={120} // ajuste conforme necessário
+            className="border-0 rounded-lg ml-4"
+          />
               </div>
             </div>
 

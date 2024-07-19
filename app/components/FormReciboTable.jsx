@@ -218,4 +218,5 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
   );
 });
 FormReciboTable.displayName = 'FormReciboTable'; // Adicione isso
+
 export default FormReciboTable;

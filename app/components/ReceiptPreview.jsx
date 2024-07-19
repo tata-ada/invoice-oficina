@@ -1,6 +1,7 @@
 import React from "react";
 import PreviewReciboTable from "./PreviewReciboTable";
 import "./Preview.css";
+import Image from 'next/image';
 
 // Função para converter números em palavras em português
 const numberToWordsPt = (number) => {
@@ -104,13 +105,14 @@ export default function ReceiptPreview({ data }) {
             <p>Telefone: (85) 98736-7782</p>
             <p>CNPJ 204445040001-08</p>
           </div>
-          <div className="w-30 h-24 border-0 rounded-lg ml-4">
-            <img
-              src="/logo3.png"
-              alt="Logo da Empresa"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
+        
+          <Image
+            src="/logo3.png"
+            alt="Logo da Empresa"
+            width={120} // ajuste conforme necessário
+            height={120} // ajuste conforme necessário
+            className="border-0 rounded-lg ml-4"
+          />
         </div>
 
         <div className="text-center mb-6">

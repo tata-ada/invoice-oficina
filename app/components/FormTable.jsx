@@ -180,4 +180,3 @@ const FormTable = forwardRef(({ updateTableData }, ref) => {
 });
 
 export default FormTable;
-
