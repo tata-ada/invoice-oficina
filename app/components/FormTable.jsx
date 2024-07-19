@@ -179,4 +179,5 @@ const FormTable = forwardRef(({ updateTableData }, ref) => {
   );
 });
 
+FormTable.displayName = "FormTable";
 export default FormTable;
