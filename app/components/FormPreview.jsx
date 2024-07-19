@@ -1,6 +1,9 @@
 import React from "react";
-import PreviewTable from "./PreviewTable";
 import "./Preview.css";
+import NextImage from 'next/image';
+import PreviewTable from "./PreviewTable";
+
+
 
 export default function FormPreview({ data }) {
   // Verifica se data está definido
@@ -49,10 +52,12 @@ Fortaleza - CE, 60531-820
             <p>CNPJ 204445040001-08</p>
           </div>
           <div className="w-30 h-24 border-0 rounded-lg">
-            <img
+            <NextImage
               src="/logo3.png"
               alt="Logo da Empresa"
-              className="w-full h-full object-cover rounded-lg"
+              width={100}
+              height={100}
+              className="object-cover rounded-lg"
             />
           </div>
         </div>

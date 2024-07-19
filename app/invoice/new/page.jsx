@@ -70,17 +70,7 @@ const InvoiceForm = () => {
   const formTableRef = useRef(null);
   const formReciboTableRef = useRef(null);
 
-  useEffect(() => {
-    const storedInvoiceCount = localStorage.getItem('invoiceCount');
-    const storedReceiptCount = localStorage.getItem('receiptCount');
-    setInvoiceCount(storedInvoiceCount ? parseInt(storedInvoiceCount, 10) : 0);
-    setReceiptCount(storedReceiptCount ? parseInt(storedReceiptCount, 10) : 0);
-  }, []);
 
-  const saveCounters = () => {
-    localStorage.setItem('invoiceCount', invoiceCount);
-    localStorage.setItem('receiptCount', receiptCount);
-  };
 
   const clearFormData = () => {
     setFormData({
