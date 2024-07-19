@@ -1,19 +1,13 @@
-"use client"
-import React, { useState, useRef } from 'react';
+"use client";
+import React, { useState, useRef, useEffect } from 'react';
 import { BsLayoutTextWindowReverse } from 'react-icons/bs';
 import { AiOutlinePrinter, AiOutlineCloudUpload } from 'react-icons/ai';
-import { CiMail } from 'react-icons/ci';
 import { useReactToPrint } from 'react-to-print';
 import FormPreview from '../../components/FormPreview';
 import ReceiptPreview from '../../components/ReceiptPreview';
-import FormTable from '@/app/components/FormTable'; // Importação corrigida
-
-import PreviewTable from '@/app/components/PreviewTable';
-import PreviewReciboTable from '@/app/components/PreviewReciboTable';
+import FormTable from '@/app/components/FormTable';
 import FormReciboTable from '@/app/components/FormReciboTable';
-import { clearTable } from '@/app/components/FormTable'; // 
 
-// Função para formatar a data no formato DD/MM/YYYY
 const formatDate = (dateString) => {
   const date = dateString ? new Date(dateString) : new Date();
   const day = date.getDate().toString().padStart(2, "0");
@@ -22,10 +16,13 @@ const formatDate = (dateString) => {
   return `${day}/${month}/${year}`;
 };
 
-
 const InvoiceForm = () => {
+  const [receiptCount, setReceiptCount] = useState(0);
+  const [invoiceCount, setInvoiceCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState('invoice');
+  const [tableData, setTableData] = useState([]);
+  
   const [formData, setFormData] = useState({
     companyName: '',
     invoiceAuthor: '',
@@ -38,22 +35,53 @@ const InvoiceForm = () => {
     clientCity: '',
     clientCountry: '',
     invoiceNumber: '01',
-    invoiceDate:'' ,
+    invoiceDate: '',
     invoiceDueDate: '',
     terms: '',
     notes: '',
-    tableData: [],
+    tableData: [{
+      nameProduct: "",
+      itemDescription: "",
+      qty: "",
+      unitPrice: "",
+      valor: ""
+    }],
   });
+
   const [receiptData, setReceiptData] = useState({
     receiptNumber: '01',
-    receiptDate:'',
+    receiptDate: '',
     clientName: '',
     clientPhone: '',
     clientAddress: '',
     amount: '',
     notes: '',
-    tableData: [],
+    tableData: [{
+      nameProduct: "",
+      itemDescription: "",
+      qty: "",
+      unitPrice: "",
+      valor: ""
+    }],
   });
+
+  const invoiceRef = useRef(null);
+  const receiptRef = useRef(null);
+  const formTableRef = useRef(null);
+  const formReciboTableRef = useRef(null);
+
+  useEffect(() => {
+    const storedInvoiceCount = localStorage.getItem('invoiceCount');
+    const storedReceiptCount = localStorage.getItem('receiptCount');
+    setInvoiceCount(storedInvoiceCount ? parseInt(storedInvoiceCount, 10) : 0);
+    setReceiptCount(storedReceiptCount ? parseInt(storedReceiptCount, 10) : 0);
+  }, []);
+
+  const saveCounters = () => {
+    localStorage.setItem('invoiceCount', invoiceCount);
+    localStorage.setItem('receiptCount', receiptCount);
+  };
+
   const clearFormData = () => {
     setFormData({
       companyName: '',
@@ -66,30 +94,45 @@ const InvoiceForm = () => {
       clientPhone: '',
       clientCity: '',
       clientCountry: '',
-      invoiceNumber: '01',
+      invoiceNumber: (invoiceCount + 1).toString().padStart(2, '0'),
       invoiceDate: '',
       invoiceDueDate: '',
       terms: '',
       notes: '',
-      tableData: [],
+      tableData: [{
+        nameProduct: "",
+        itemDescription: "",
+        qty: "",
+        unitPrice: "",
+        valor: ""
+      }]
     });
+    if (formTableRef.current) {
+      formTableRef.current.clearTable();
+    }
   };
-  
+
   const clearReceiptData = () => {
     setReceiptData({
-      receiptNumber: '01',
+      receiptNumber: (receiptCount + 1).toString().padStart(2, '0'),
       receiptDate: '',
       clientName: '',
       clientPhone: '',
       clientAddress: '',
       amount: '',
       notes: '',
-      tableData: [],
+      tableData: [{
+        nameProduct: "",
+        itemDescription: "",
+        qty: "",
+        unitPrice: "",
+        valor: ""
+      }],
     });
+    if (formReciboTableRef.current) {
+      formReciboTableRef.current.clearTable();
+    }
   };
-  
-  const invoiceRef = useRef(null);
-  const receiptRef = useRef(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -176,30 +219,27 @@ const InvoiceForm = () => {
     }
   };
 
-  const handlePreviewReceipt = () => {
-    setShowReceiptPreview(true);
-  };
-
   const handlePrintInvoice = useReactToPrint({
     content: () => invoiceRef.current,
     onAfterPrint: () => {
       clearFormData();
+      setInvoiceCount(prevCount => prevCount + 1);
+      saveCounters();
     }
-    
   });
 
   const handlePrintReceipt = useReactToPrint({
     content: () => receiptRef.current,
     onAfterPrint: () => {
       clearReceiptData();
-      clearTable();
+      setReceiptCount(prevCount => prevCount + 1);
+      saveCounters();
     }
   });
 
   const toggleSection = (section) => {
     setActiveSection(section);
   };
-
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* HEADER */}
@@ -212,10 +252,10 @@ const InvoiceForm = () => {
             }`}
           >
             {activeSection === 'invoice' ? (
-              'Orcamento'
+              'Orçamento'
             ) : (
               <div className="flex items-center space-x-2">
-                <BsLayoutTextWindowReverse className="w-5 h-5" /> <span>Orcamento</span>
+                <BsLayoutTextWindowReverse className="w-5 h-5" /> <span>Orçamento</span>
               </div>
             )}
           </button>
@@ -233,23 +273,18 @@ const InvoiceForm = () => {
               </div>
             )}
           </button>
-          <button
+          
+          
+        </div>
+        <div className="flex flex-wrap justify-center gap-2">
+        <button
             onClick={activeSection === 'invoice' ? handlePrintInvoice : handlePrintReceipt}
             className="flex items-center space-x-2 px-3 py-2 bg-gray-200 text-gray-700 rounded-sm border-2 border-blue-200 shadow-md hover:bg-gray-300"
           >
             <AiOutlinePrinter className="w-5 h-5" />
             <span>Imprimir {activeSection === 'invoice' ? 'Orcamento' : 'Recibo'}</span>
           </button>
-          
-        </div>
-        <div className="flex flex-wrap justify-center gap-2">
-          <button
-            className="flex items-center space-x-2 px-3 py-2 bg-blue-100 text-blue-700 rounded-sm border-2 border-blue-400 shadow-md hover:bg-blue-300"
-          >
-            <AiOutlineCloudUpload className="w-5 h-5" />
-            <span>Salvos</span>
-            
-          </button> 
+        
           
 
           
@@ -265,8 +300,10 @@ const InvoiceForm = () => {
               {/* Informações da Empresa */}
               <div className="w-1/2">
                 <h2 className="text-xl font-bold mb-2">Oficina do Alumínio </h2>
-                <p>  Av. I 1733 Conjunto ceara 3 etapa</p>
-                <p>Telefone: (11) 99999-9999</p>
+                <p>  Av. I, 1733 - Conj. Ceará II
+Fortaleza - CE, 60531-820
+</p>
+                <p>Telefone: (85) 98736-77822</p>
                 <p>CNPJ 204445040001-08</p>
               </div>
               {/* Imagem */}
@@ -365,7 +402,8 @@ const InvoiceForm = () => {
             </div>
 
             {/* Tabela de Itens */}
-            <FormTable tableData={formData.tableData} updateTableData={updateTableData} />
+            <FormTable ref={formTableRef} updateTableData={(data) => setFormData({ ...formData, tableData: data })} />
+
 
             {/* Notas do Orçamento */}
             <div className="mt-6">
@@ -387,16 +425,17 @@ const InvoiceForm = () => {
             <div className="flex justify-center mt-8">
               <button
                 type="submit"
-                onClick={handleFormSubmit}
+                onClick={handlePrintInvoice}
                 className="w-full md:w-1/2 py-3 px-4 bg-gray-700 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md"
                 disabled={loading}
               >
-                {loading ? 'Enviando...' : 'Enviar Orçamento'}
+                {loading ? 'Imprimi...' : 'Imprimir Orçamento'}
               </button>
             </div>
           </div>
         </div>
       ) : (
+        
 
         // RECIBO 
         
@@ -407,12 +446,14 @@ const InvoiceForm = () => {
               {/* Informações da Empresa */}
               <div className="w-1/2">
                 <h2 className="text-xl font-bold mb-2">Oficina do Alumínio </h2>
-                <p>Av. I 1733 Conjunto ceara 3 etapa</p>
-                <p>Telefone: (85) 59999-9999</p>
+                <p>Av. I, 1733 - Conj. Ceará II
+Fortaleza - CE, 60531-820
+</p>
+                <p>Telefone: (85) 98736-7782</p>
                 <p>CNPJ 204445040001-08</p>
               </div>
               {/* Imagem */}
-              <div className="w-30 h-24 border-0  rounded-lg">
+              <div className="ww-30 h-24 border-0 rounded-lg ml-4">
                 <img
                   src="/logo.png"
                   alt="Logo da Empresa"
@@ -431,7 +472,7 @@ const InvoiceForm = () => {
               <div className="flex flex-col w-full lg:w-1/2">
                 <div className="flex gap-2 items-center mb-2">
                   <label className="text-slate-600 font-bold" htmlFor="clientName">
-                    Nome do Cliente:
+                    Recebido de:
                   </label>
                   <input
                     type="text"
@@ -496,7 +537,7 @@ const InvoiceForm = () => {
               <div className="flex flex-col w-full lg:w-1/2">
                 <div className="flex gap-2 items-center mb-2">
                   <label className="text-slate-600 font-bold" htmlFor="amount">
-                    Valor do Recibo:
+                    A quantia de:
                   </label>
                   <input
                     type="text"
@@ -512,12 +553,19 @@ const InvoiceForm = () => {
             </div>
             
              {/* Tabela de Itens */}
-             <FormReciboTable tableData={receiptData.tableData} updateTableData={updateReceiptTableData} />
+             <div>
+                {/* Tabela de Itens */}
+                <FormReciboTable
+            ref={formReciboTableRef}
+            updateTableData={(data) => setReceiptData({ ...receiptData, tableData: data })}
+          />
+
+    </div>
 
             {/* Notas do Recibo */}
             <div className="mt-6">
               <label className="block text-slate-600 font-bold mb-2" htmlFor="notes">
-                Notas:
+              Termos e Condições:
               </label>
               <textarea
                 id="notes"
@@ -535,11 +583,11 @@ const InvoiceForm = () => {
             <div className="flex justify-center mt-8">
               <button
                 type="submit"
-                onClick={handleReceiptSubmit}
+                onClick={handlePrintReceipt}
                 className="w-full md:w-1/2 py-3 px-4 bg-gray-700 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md"
                 disabled={loading}
               >
-                {loading ? 'Enviando...' : 'Enviar Recibo'}
+                {loading ? 'Imprimindo...' : 'Imprimir Recibo'}
               </button>
             </div>
           </div>

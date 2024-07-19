@@ -5,6 +5,10 @@
 
 /* Importação da fonte do Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Allura&family=Caveat:wght@400..700&display=swap');
+.signature-name {
+  font-family: 'Caveat', cursive;
+}
+
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'San Francisco', 'Segoe UI', 'Roboto', 'Oxygen',

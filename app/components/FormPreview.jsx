@@ -42,8 +42,10 @@ export default function FormPreview({ data }) {
         <div className="flex justify-between items-start mb-6">
           <div className="w-1/2">
             <h2 className="text-xl font-bold mb-2">Oficina do Aluminio</h2>
-            <p>Av. I 1733 Conjunto ceara 3 etapa</p>
-            <p>Telefone: (85) 99999-9999</p>
+            <p>Av. I, 1733 - Conj. Ceará II
+Fortaleza - CE, 60531-820
+</p>
+            <p>Telefone: (85) 98736-7782</p>
             <p>CNPJ 204445040001-08</p>
           </div>
           <div className="w-30 h-24 border-0 rounded-lg">
@@ -80,7 +82,9 @@ export default function FormPreview({ data }) {
           <div className="w-1/2 pl-4">
             <div className="flex gap-2 items-center mb-2">
               <label className="text-slate-600 font-bold" htmlFor="invoiceNumber">Nº:</label>
-              <p className="font-bold text-base">{invoiceNumber}</p>
+              <p className="font-bold text-base">{invoiceNumber || 'Não disponível'}</p>
+              
+
             </div>
 
             <div className="flex gap-2 items-center mb-2">

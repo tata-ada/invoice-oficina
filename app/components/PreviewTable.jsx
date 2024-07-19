@@ -24,8 +24,8 @@ export default function PreviewTable({ tableData }) {
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg my-10">
-      <table className="w-full text-sm text-left text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase border-t border-black bg-gray-50">
+      <table className="w-full text-sm text-left text-black-500">
+        <thead className="text-xs text-gray-500 uppercase border-t border-black bg-gray-50">
           <tr>
             <th scope="col" className="px-6 py-3 border-b border-gray-400">
               Produto

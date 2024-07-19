@@ -1,10 +1,7 @@
-// TABELA DE ORCAMENTO qUE APARECE USUARIO 
-
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import { AiOutlineCloseCircle, AiOutlinePlus } from "react-icons/ai";
 
-export default function FormTable({ updateTableData }) {
+const FormTable = forwardRef(({ updateTableData }, ref) => {
   const [tableData, setTableData] = useState([
     {
       nameProduct: "",
@@ -14,6 +11,13 @@ export default function FormTable({ updateTableData }) {
       valor: ""
     }
   ]);
+
+  useImperativeHandle(ref, () => ({
+    clearTable() {
+      setTableData([{ nameProduct: "", itemDescription: "", qty: "", unitPrice: "", valor: "" }]);
+    }
+  }));
+
   const [totalValue, setTotalValue] = useState(0);
 
   useEffect(() => {
@@ -56,12 +60,6 @@ export default function FormTable({ updateTableData }) {
     setTableData(updatedData);
     updateTableData(updatedData);
   };
-  const clearTable = () => {
-    setTableData([initialRow]);
-    setTotalValue(0);
-    updateTableData([initialRow]);
-  };
-
 
   const updateTotalValue = () => {
     let total = 0;
@@ -78,24 +76,12 @@ export default function FormTable({ updateTableData }) {
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase border-t border-black bg-gray-50">
           <tr>
-            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">
-              Produto
-            </th>
-            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">
-              Descrição
-            </th>
-            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">
-              Quantidade
-            </th>
-            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">
-              Preço
-            </th>
-            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">
-              Total
-            </th>
-            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">
-              <span className="sr-only">Ações</span>
-            </th>
+            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">Produto</th>
+            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">Descrição</th>
+            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">Quantidade</th>
+            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">Preço</th>
+            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400">Total</th>
+            <th scope="col" className="px-2 py-3 sm:px-6 border-b border-gray-400"><span className="sr-only">Ações</span></th>
           </tr>
         </thead>
         <tbody className="bg-white shadow-lg">
@@ -103,9 +89,7 @@ export default function FormTable({ updateTableData }) {
             <tr key={index} className="bg-white hover:bg-gray-70">
               <td className="px-2 py-4 sm:px-6 border-b border-gray-500">
                 <form className="max-w-sm mx-auto flex items-center">
-                  <label htmlFor={`underline_select_${index}`} className="sr-only">
-                    Produto
-                  </label>
+                  <label htmlFor={`underline_select_${index}`} className="sr-only">Produto</label>
                   <select
                     id={`underline_select_${index}`}
                     name="nameProduct"
@@ -113,19 +97,19 @@ export default function FormTable({ updateTableData }) {
                     onChange={(e) => handleInputChange(index, e)}
                     className="block py-2.5 px-2 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200"
                   >
-                   <option value="">Selecione</option>
-              <option value="Box de vidro temperado">Box de vidro temperado</option>
-              <option value="Grade de alumínio">Grade de alumínio</option>
-              <option value="Janela de alumínio e vidro">Janela de alumínio e vidro</option>
-              <option value="Janela de vidro temperado">Janela de vidro temperado</option>
-              <option value="Janela de vidro temperado fumê">Janela de vidro temperado fumê</option>
-              <option value="Janela de vidro temperado incolor">Janela de vidro temperado incolor</option>
-              <option value="Janela de vidro temperado verde">Janela de vidro temperado verde</option>
-              <option value="Manutenção de esquadrias de alumínio">Manutenção de esquadrias de alumínio</option>
-              <option value="Portas de alumínio">Portas de alumínio</option>
-              <option value="Portas de alumínio com vidro">Portas de alumínio com vidro</option>
-              <option value="Portão de alumínio">Portão de alumínio</option>
-
+                    <option value="">Selecione</option>
+                    <option value="Box de vidro temperado">Box de vidro temperado</option>
+                    <option value="Grade de alumínio">Grade de alumínio</option>
+                    <option value="Janela de alumínio e vidro">Janela de alumínio e vidro</option>
+                    <option value="Janela de vidro temperado">Janela de vidro temperado</option>
+                    <option value="Janela de vidro temperado fumê">Janela de vidro temperado fumê</option>
+                    <option value="Janela de vidro temperado incolor">Janela de vidro temperado incolor</option>
+                    <option value="Janela de vidro temperado verde">Janela de vidro temperado verde</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="Manutenção de esquadrias de alumínio">Manutenção de esquadrias de alumínio</option>
+                    <option value="Portas de alumínio">Portas de alumínio</option>
+                    <option value="Portas de alumínio com vidro">Portas de alumínio com vidro</option>
+                    <option value="Portão de alumínio">Portão de alumínio</option>
                   </select>
                 </form>
               </td>
@@ -141,7 +125,7 @@ export default function FormTable({ updateTableData }) {
               </td>
               <td className="px-2 py-4 sm:px-6 border-b border-gray-500">
                 <input
-                  className="bg-transparent text-base border-0 p-1 mb-2 h-7 w-12 placeholder:text-slate-400"
+                  className="bg-transparent text-base border-0 p-1 mb-2 h-7 w-24 placeholder:text-slate-400"
                   type="number"
                   name="qty"
                   value={item.qty || ""}
@@ -186,15 +170,14 @@ export default function FormTable({ updateTableData }) {
                 <span>Adicionar outro produto</span>
               </button>
             </td>
-            <td className="px-6 py-4 font-bold border-b border-gray-500 text-right">
-              Total:
-            </td>
-            <td className="px-6 py-4 font-bold border-b border-gray-500">
-              {totalValue}
-            </td>
+            <td className="px-6 py-4 font-bold border-b border-gray-500 text-right">Total:</td>
+            <td className="px-6 py-4 font-bold border-b border-gray-500">{totalValue}</td>
           </tr>
         </tbody>
       </table>
     </div>
   );
-}
+});
+
+export default FormTable;
+

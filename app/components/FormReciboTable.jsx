@@ -1,43 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { AiOutlineCloseCircle, AiOutlinePlus } from "react-icons/ai";
 
-export default function FormReciboTable({ updateTableData, updateReceiptData, tableDataProp }) {
-  const [tableData, setTableData] = useState(tableDataProp || [
-    {
-      nameProduct: "",
-      itemDescription: "",
-      qty: "",
-      unitPrice: "",
-      valor: ""
-    }
-  ]);
+const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableDataProp }, ref) => {
+  const initialRow = {
+    nameProduct: "",
+    itemDescription: "",
+    qty: "",
+    unitPrice: "",
+    valor: ""
+  };
 
+  const [tableData, setTableData] = useState(tableDataProp || [initialRow]);
   const [totalValue, setTotalValue] = useState(0);
-
-  useEffect(() => {
-    setTableData(tableDataProp || [
-      {
-        nameProduct: "",
-        itemDescription: "",
-        qty: "",
-        unitPrice: "",
-        valor: ""
-      }
-    ]);
-  }, [tableDataProp]);
 
   useEffect(() => {
     updateTotalValue();
   }, [tableData]);
 
+  useImperativeHandle(ref, () => ({
+    clearTable() {
+      setTableData([initialRow]);
+      setTotalValue(0);
+      updateTableData([initialRow]);
+      if (typeof updateReceiptData === 'function') {
+        updateReceiptData([initialRow]);
+      }
+    }
+  }));
+
   const addRow = () => {
-    const newRow = {
-      nameProduct: "",
-      itemDescription: "",
-      qty: "",
-      unitPrice: "",
-      valor: ""
-    };
+    const newRow = { ...initialRow };
     const updatedTableData = [...tableData, newRow];
     setTableData(updatedTableData);
     updateTableData(updatedTableData);
@@ -78,6 +70,15 @@ export default function FormReciboTable({ updateTableData, updateReceiptData, ta
     }
   };
 
+  const clearTable = () => {
+    setTableData([initialRow]);
+    setTotalValue(0);
+    updateTableData([initialRow]);
+    if (typeof updateReceiptData === 'function') {
+      updateReceiptData([initialRow]);
+    }
+  };
+
   const updateTotalValue = () => {
     let total = 0;
     tableData.forEach((item) => {
@@ -87,6 +88,10 @@ export default function FormReciboTable({ updateTableData, updateReceiptData, ta
     });
     setTotalValue(total.toFixed(2));
   };
+
+  useImperativeHandle(ref, () => ({
+    clearTable
+  }));
 
   return (
     <div className="relative overflow-x-auto sm:rounded-lg my-10">
@@ -211,4 +216,6 @@ export default function FormReciboTable({ updateTableData, updateReceiptData, ta
       </table>
     </div>
   );
-}
+});
+
+export default FormReciboTable;
