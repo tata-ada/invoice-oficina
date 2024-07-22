@@ -38,6 +38,8 @@ const InvoiceForm = () => {
     invoiceNumber: '01',
     invoiceDate: '',
     invoiceDueDate: '',
+    amount: "",
+    amountInWords: "",
     terms: '',
     notes: '',
     tableData: [{
@@ -56,6 +58,7 @@ const InvoiceForm = () => {
     clientPhone: '',
     clientAddress: '',
     amount: '',
+    amountInWords: "",
     notes: '',
     tableData: [{
       nameProduct: "",
@@ -111,6 +114,7 @@ const InvoiceForm = () => {
       clientPhone: '',
       clientAddress: '',
       amount: '',
+      amountInWords: '',
       notes: '',
       tableData: [{
         nameProduct: "",
@@ -124,6 +128,8 @@ const InvoiceForm = () => {
       formReciboTableRef.current.clearTable();
     }
   };
+  
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -132,6 +138,15 @@ const InvoiceForm = () => {
       [name]: value,
     }));
   };
+  const handleTotalValueChange = (totalValue) => {
+    setReceiptData((prevState) => ({
+      ...prevState,
+      amount: totalValue,
+      amountInWords: numberToWordsPt(totalValue),
+    }));
+  };
+  
+
 
   const handleReceiptInputChange = (e) => {
     const { name, value } = e.target;
@@ -395,7 +410,7 @@ Fortaleza - CE, 60531-820
             </div>
 
             {/* Tabela de Itens */}
-            <FormTable ref={formTableRef} updateTableData={(data) => setFormData({ ...formData, tableData: data })} />
+            <FormTable ref={formTableRef} updateTableData={(data) => setFormData({ ...formData, tableData: data })}  onTotalValueChange={handleTotalValueChange}/>
 
 
             {/* Notas do Orçamento */}

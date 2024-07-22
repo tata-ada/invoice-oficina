@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { AiOutlineCloseCircle, AiOutlinePlus } from "react-icons/ai";
 
-const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableDataProp }, ref) => {
+const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableDataProp, onTotalValueChange }, ref) => {
   const initialRow = {
     nameProduct: "",
     itemDescription: "",
@@ -43,14 +43,9 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
     const updatedData = [...tableData];
     updatedData[index][name] = value;
 
-    if (name === "qty" || name === "unitPrice") {
-      const qty = parseFloat(updatedData[index].qty);
-      const price = parseFloat(updatedData[index].unitPrice);
-      if (!isNaN(qty) && !isNaN(price)) {
-        updatedData[index].valor = (qty * price).toFixed(2);
-      } else {
-        updatedData[index].valor = "";
-      }
+    // Atualiza o total se o campo alterado for o preço unitário
+    if (name === "unitPrice") {
+      updateTotalValue();
     }
 
     setTableData(updatedData);
@@ -59,6 +54,7 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
       updateReceiptData(updatedData);
     }
   };
+
 
   const removeRow = (index) => {
     const updatedData = [...tableData];
@@ -79,16 +75,21 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
     }
   };
 
+  // Função para atualizar o valor total
   const updateTotalValue = () => {
     let total = 0;
     tableData.forEach((item) => {
-      if (item.valor) {
-        total += parseFloat(item.valor);
+      if (item.unitPrice) {
+        total += parseFloat(item.unitPrice);
       }
     });
-    setTotalValue(total.toFixed(2));
+    
+    const totalFixed = total.toFixed(2);
+    setTotalValue(totalFixed);
+    if (typeof onTotalValueChange === 'function') {
+      onTotalValueChange(totalFixed); // Passa o valor total atualizado para o componente pai
+    }
   };
-
   useImperativeHandle(ref, () => ({
     clearTable
   }));
@@ -98,21 +99,15 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase border-t border-black bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3 border-b border-gray-400">
-              Produto
-            </th>
+           
             <th scope="col" className="px-6 py-3 border-b border-gray-400">
               Descrição
             </th>
-            <th scope="col" className="px-6 py-3 border-b border-gray-400">
-              Quantidade
-            </th>
+           
             <th scope="col" className="px-6 py-3 border-b border-gray-400">
               Preço
             </th>
-            <th scope="col" className="px-6 py-3 border-b border-gray-400">
-              Total
-            </th>
+           
             <th scope="col" className="px-6 py-3 border-b border-gray-400">
               <span className="sr-only">Ações</span>
             </th>
@@ -121,33 +116,7 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
         <tbody className="bg-white shadow-lg">
           {tableData.map((item, index) => (
             <tr key={index} className="bg-white hover:bg-gray-70">
-              <td className="px-6 py-4 border-b border-gray-500 ">
-                <form className="max-w-sm mx-auto flex items-center">
-                  <label htmlFor={`underline_select_${index}`} className="sr-only">
-                    Produto
-                  </label>
-                  <select
-                    id={`underline_select_${index}`}
-                    name="nameProduct"
-                    value={item.nameProduct || ""}
-                    onChange={(e) => handleReceiptInputChange(index, e)}
-                    className="block py-2.5 px-2 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200"
-                  >
-                    <option value="">Selecione</option>
-                    <option value="Box de vidro temperado">Box de vidro temperado</option>
-                    <option value="Grade de alumínio">Grade de alumínio</option>
-                    <option value="Janela de alumínio e vidro">Janela de alumínio e vidro</option>
-                    <option value="Janela de vidro temperado">Janela de vidro temperado</option>
-                    <option value="Janela de vidro temperado fumê">Janela de vidro temperado fumê</option>
-                    <option value="Janela de vidro temperado incolor">Janela de vidro temperado incolor</option>
-                    <option value="Janela de vidro temperado verde">Janela de vidro temperado verde</option>
-                    <option value="Manutenção de esquadrias de alumínio">Manutenção de esquadrias de alumínio</option>
-                    <option value="Portas de alumínio">Portas de alumínio</option>
-                    <option value="Portas de alumínio com vidro">Portas de alumínio com vidro</option>
-                    <option value="Portão de alumínio">Portão de alumínio</option>
-                  </select>
-                </form>
-              </td>
+             
               <td className="px-6 py-4 border-b border-gray-500">
                 <textarea
                   id={`description_${index}`}
@@ -158,16 +127,7 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
                   placeholder="Descrição"
                 ></textarea>
               </td>
-              <td className="px-6 py-4 border-b border-gray-500">
-                <input
-                  className="bg-transparent text-base border-0 p-1 mb-2 h-7 w-24 placeholder:text-slate-400"
-                  type="number"
-                  name="qty"
-                  value={item.qty || ""}
-                  onChange={(e) => handleReceiptInputChange(index, e)}
-                  placeholder="Quantidade"
-                />
-              </td>
+              
               <td className="px-6 py-4 border-b border-gray-500">
                 <input
                   className="bg-transparent text-base border-0 p-1 mb-2 h-7 w-24 placeholder:text-slate-400"
@@ -178,15 +138,7 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
                   placeholder="Preço"
                 />
               </td>
-              <td className="px-6 py-4 border-b border-gray-500">
-                <input
-                  className="bg-transparent text-base border-0 p-1 mb-2 h-7 w-24 placeholder:text-slate-400"
-                  type="text"
-                  name="valor"
-                  value={item.valor || ""}
-                  readOnly
-                />
-              </td>
+             
               <td className="px-6 py-4 text-right border-b border-gray-500">
                 <button type="button" onClick={() => removeRow(index)}>
                   <AiOutlineCloseCircle className="text-base text-red-600" />
@@ -205,12 +157,16 @@ const FormReciboTable = forwardRef(({ updateTableData, updateReceiptData, tableD
                 <span>Adicionar outro produto</span>
               </button>
             </td>
-            <td className="px-6 py-4 font-bold border-b border-gray-500 text-right">
+            <tr className="bg-gray-50">
+            <td colSpan="1" className="px-6 py-4 font-bold text-right border-t border-gray-400">
               Total:
             </td>
-            <td className="px-6 py-4 font-bold border-b border-gray-500">
+            <td className="px-6 py-4 font-bold border-t border-gray-400">
               {totalValue}
             </td>
+          </tr>
+            
+            
           </tr>
         </tbody>
       </table>
