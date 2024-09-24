@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@prisma/client": "^5.17.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "next": "14.2.4",
     "number-to-words": "^1.2.4",
     "react": "^18",

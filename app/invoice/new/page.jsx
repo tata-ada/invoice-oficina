@@ -8,6 +8,9 @@ import FormPreview from '../../components/FormPreview';
 import ReceiptPreview from '../../components/ReceiptPreview';
 import FormTable from '@/app/components/FormTable';
 import FormReciboTable from '@/app/components/FormReciboTable';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 
 const formatDate = (dateString) => {
   const date = dateString ? new Date(dateString) : new Date();
@@ -199,7 +202,11 @@ const InvoiceForm = () => {
     } finally {
       setLoading(false);
     }
-  };
+ 
+  return (
+    <button onClick={handleGeneratePDFAndSendWhatsApp}>Gerar PDF e Enviar</button>
+  );
+};
 
   const handleReceiptSubmit = async (e) => {
     e.preventDefault();
@@ -242,6 +249,54 @@ const InvoiceForm = () => {
    
     }
   });
+
+  const handleGeneratePDFAndSendWhatsApp = async (ref) => {
+    setLoading(true);
+    try {
+      // Usando a função de print definida anteriormente
+      await new Promise((resolve) => {
+        const print = useReactToPrint({
+          content: () => ref.current,
+          onAfterPrint: resolve,
+        });
+        print();
+      });
+  
+      // Use html2canvas to capture the content as a canvas
+      const canvas = await html2canvas(ref.current);
+      const imgData = canvas.toDataURL('image/png');
+  
+      // Convert canvas to PDF using jsPDF
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, 'PNG', 0, 0);
+      const pdfBlob = pdf.output('blob');
+  
+      // Create an object URL for the PDF
+      const pdfURL = URL.createObjectURL(pdfBlob);
+  
+      // Prompt user to download the PDF
+      const link = document.createElement('a');
+      link.href = pdfURL;
+      link.download = 'document.pdf';
+      link.click();
+  
+      // Open WhatsApp with a placeholder message (since direct file sending isn't supported)
+      const whatsappMessage = 'Aqui está o documento PDF que você solicitou:';
+      const whatsappURL = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMessage)}%0A${encodeURIComponent(pdfURL)}`;
+  
+      window.open(whatsappURL, '_blank');
+    } catch (error) {
+      console.error("Erro ao gerar PDF e enviar via WhatsApp", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+
+  
+
+
 
   const toggleSection = (section) => {
     setActiveSection(section);
@@ -429,7 +484,7 @@ Fortaleza - CE, 60531-820
               />
             </div>
 
-            {/* Botão de Enviar */}
+            {/* Botão de Imprimir */}
             <div className="flex justify-center mt-8">
               <button
                 type="submit"
@@ -440,6 +495,25 @@ Fortaleza - CE, 60531-820
                 {loading ? 'Imprimi...' : 'Imprimir Orçamento'}
               </button>
             </div>
+
+            {/* Botão de Enviar Orcamento */}
+
+            <div className="flex justify-center mt-8">
+              <button
+              type="submit"
+              onClick={() => handleGeneratePDFAndSendWhatsApp(invoiceRef)}
+              className="w-full md:w-1/2 py-3 px-4 bg-gray-700 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md"
+              disabled={loading}
+            >
+              {loading ? 'Enviando...' : 'Enviar Orçamento via WhatsApp'}
+            </button>
+      </div>
+
+            
+
+
+
+
           </div>
         </div>
       ) : (
@@ -589,7 +663,7 @@ Fortaleza - CE, 60531-820
             </div>
 
 
-            {/* Botão de Enviar */}
+            {/* Botão de imprimir recibo  */}
             <div className="flex justify-center mt-8">
               <button
                 type="submit"
@@ -600,6 +674,21 @@ Fortaleza - CE, 60531-820
                 {loading ? 'Imprimindo...' : 'Imprimir Recibo'}
               </button>
             </div>
+
+             {/* Botão de Enviar Recibo */}
+
+             <div className="flex justify-center mt-8">
+        <button
+          type="submit"
+          onClick={() => handleGeneratePDFAndSendWhatsApp(receiptRef)}
+          className="w-full md:w-1/2 py-3 px-4 bg-gray-700 hover:bg-blue-600 text-white font-semibold rounded-md shadow-md"
+          disabled={loading}
+        >
+          {loading ? 'Enviando...' : 'Enviar Recibo via WhatsApp'}
+        </button>
+      </div>
+
+
           </div>
         </div>
       )}
